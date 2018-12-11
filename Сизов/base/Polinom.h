@@ -14,6 +14,10 @@ private:
 			koef = _k;
 			deg = _deg;
 		}
+		/*Monom operator +()
+		{
+
+		}*/
 		friend ostream& operator<<(ostream &os, Monom &mn)
 		{
 			os << "Степень монома:" << mn.deg << " ";
@@ -40,29 +44,40 @@ public:
 	{
 		TPolinom tmp;
 		TList<Monom>::iterator it1,it2;
-		if (this->polinom.GetSize() >= pl.polinom.GetSize())
-		{
-			tmp = *this;
-			it2 = pl.polinom.Begin();
-		}
-		else
-		{
-			tmp = pl;
-			it2 = this->polinom.Begin();
-		}
-		it1 = tmp.polinom.Begin();
-		for (it1;it1!=tmp.polinom.End();++it1)
+		//if (this->polinom.GetSize() >= pl.polinom.GetSize())
+		//{
+		//	//tmp = *this;
+		//	it1 = this->polinom.Begin();
+		//	it2 = pl.polinom.Begin();
+		//}
+		//else
+		//{
+		//	it1 = pl.polinom.Begin();
+		//	it2 = this->polinom.Begin();
+		//}
+		////it1 = tmp.polinom.Begin();
+		it1 = this->polinom.Begin();
+		it2 = pl.polinom.End();
+		for (it1,it2;it1!=this->polinom.End(),it2!=pl.polinom.End();)
 		{
 			if (it1->data.deg == it2->data.deg)
 			{
-				it1->data.koef += it2->data.koef;
+				Monom t(it1->data.koef + it2->data.koef,it1->data.deg);
+				tmp.polinom.Push_Back(t);
+				++it1;
 				++it2;
 			}
-			else
+			if (it1->data.deg > it2->data.deg)
 			{
-				tmp.polinom.Insert(it1, it2->data);
+				Monom t(it1->data.koef, it1->data.deg);
+				tmp.polinom.Push_Back(t);
 			}
-			return tmp;
+			else if (it1->data.deg < it2->data.deg)
+			{
+				Monom t(it2->data.koef, it2->data.deg);
+				++it2;
+			}
 		}
+		return tmp;
 	}
 };
