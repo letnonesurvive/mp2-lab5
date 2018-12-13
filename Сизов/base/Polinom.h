@@ -1,5 +1,4 @@
 #include "List.h"
-#include <vector>
 const int DEG = 9;
 
 class TPolinom
@@ -7,77 +6,49 @@ class TPolinom
 private:
 	struct Monom 
 	{
-		double koef;
+		int koef;
 		int deg;
-		Monom(double _k = 0, int _deg = 0)
+		string name;
+		Monom(int _k = 1, int _d = 0)
 		{
 			koef = _k;
-			deg = _deg;
+			deg = _d;
 		}
-		/*Monom operator +()
+		Monom operator +(const Monom &mn)
 		{
-
-		}*/
-		friend ostream& operator<<(ostream &os, Monom &mn)
+			if (this->deg != mn.deg)
+				throw "incorrect addition";
+			Monom tmp;
+			tmp.koef = this->koef + mn.koef;
+			tmp.deg = this->deg;
+			tmp.name =this->name;
+			return tmp;
+		}
+		Monom operator -(const Monom &mn)
 		{
-			os << "Степень монома:" << mn.deg << " ";
-			os << "Коэфициент монома:" << mn.koef << " " << endl;
-			return os;
+			if (this->deg != mn.deg)
+				throw "incorrect addition";
+			Monom tmp;
+			tmp.koef = this->koef - mn.koef;
+			tmp.deg = this->deg;
+			tmp.name = this->name;
+			return tmp;
 		}
 	};
-	int p;
-	string str;
+	string prefix;
 	TList<Monom> polinom;
-	TList<Monom>::iterator it;
 	bool IsSign(char op);
 	bool IsVariable(char op);
-	int Change_Num_System(int a);
 	int GetDegree(char p);
 public:
-	TPolinom(string _str="");
-	void Fill_List();
-	void Print()
-	{
-		cout << polinom;
-	}
-	TPolinom operator+(TPolinom &pl)
-	{
-		TPolinom tmp;
-		TList<Monom>::iterator it1,it2;
-		//if (this->polinom.GetSize() >= pl.polinom.GetSize())
-		//{
-		//	//tmp = *this;
-		//	it1 = this->polinom.Begin();
-		//	it2 = pl.polinom.Begin();
-		//}
-		//else
-		//{
-		//	it1 = pl.polinom.Begin();
-		//	it2 = this->polinom.Begin();
-		//}
-		////it1 = tmp.polinom.Begin();
-		it1 = this->polinom.Begin();
-		it2 = pl.polinom.End();
-		for (it1,it2;it1!=this->polinom.End(),it2!=pl.polinom.End();)
-		{
-			if (it1->data.deg == it2->data.deg)
-			{
-				Monom t(it1->data.koef + it2->data.koef,it1->data.deg);
-				tmp.polinom.Push_Back(t);
-				++it1;
-				++it2;
-			}
-			if (it1->data.deg > it2->data.deg)
-			{
-				Monom t(it1->data.koef, it1->data.deg);
-				tmp.polinom.Push_Back(t);
-			}
-			else if (it1->data.deg < it2->data.deg)
-			{
-				Monom t(it2->data.koef, it2->data.deg);
-				++it2;
-			}
-		}
-		return tmp;
-	}
+	TPolinom(string _str = "") :prefix(_str) {}
+	TPolinom(const TPolinom &pl);
+	void Convert();//нужна для преобразования 
+	int Calculate(int _x, int _y , int _z);
+	TPolinom operator+(TPolinom &pl);
+	TPolinom operator-(TPolinom &pl);
+	TPolinom& operator=(const TPolinom &pl);
+	friend ostream & operator<<(ostream &os, TPolinom &pl);
+	friend istream & operator>>(istream &is, TPolinom &pl);
+	bool operator == (const TPolinom &pl)const ;
 };

@@ -1,4 +1,4 @@
-#include <iostream>
+п»ї#include <iostream>
 #include <string>
 
 const int MAXSIZE = 1000; 
@@ -18,39 +18,10 @@ private:
 			pNext = _pNext;
 			data = _data;
 		}
-		/*Node (const Node<type> &nd)
-		{
-			pNext = new Node<type>;
-			pNext = nd.pNext;
-			data = nd.data;
-		}*/
-		/*Node<type>& operator = (const Node<type> *nd)
-		{
-			this = new Node<type>;
-			this->pNext = nd.pNext;
-			this->data = nd.data;
-			return *this;
-		} */
-		bool operator==(const Node<type> &nd)const
-		{
-			if (this == nd)
-				return true;
-			else return false;
-		}
-		bool operator != (const Node<type> &nd) const
-		{
-			return !(*this == nd);
-		}
-		friend ostream &operator<<(ostream &os, Node<type> nd)
-		{
-			os << nd.data;
-			return os;
-		}
 	};
-	int datacount;//кол-во элементов в списке
-	Node <type> *pFirst;//заголовок
-	Node <type> *pCurrent;//указатель на текущий 
-	Node <type> *pPrevios;//указатель на предыдущий
+	int datacount;//РєРѕР»-РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РІ СЃРїРёСЃРєРµ
+	Node <type> *pFirst;//Р·Р°РіРѕР»РѕРІРѕРє
+	Node <type> *pCurrent;//СѓРєР°Р·Р°С‚РµР»СЊ РЅР° С‚РµРєСѓС‰РёР№ 
  public:
 	class iterator
 	{
@@ -64,10 +35,6 @@ private:
 		iterator(const iterator &it)
 		{
 			pointer = it.pointer;
-		}
-		Node<type>* base() const 
-		{ 
-			return pointer;
 		}
 		iterator& operator=(const iterator &tmp)
 		{
@@ -88,11 +55,11 @@ private:
 		{
 			return !(*this == it);
 		}
-		const Node<type> operator*()const
+		type operator*()const
 		{
 			if (pointer == nullptr)
 				throw("nullptr");
-			return *pointer;
+			return pointer->data;
 		}
 		iterator& operator ++()
 		{
@@ -100,13 +67,11 @@ private:
 			return *this;
 		}
 		friend class TList;
-		//friend class TPolinom;
 	};
 	TList()
 	{
 		pFirst = nullptr;
 		pCurrent = nullptr;
-		pPrevios = nullptr;
 		datacount = 0;
 	}
 	TList(const TList<type> &lst)
@@ -132,6 +97,28 @@ private:
 		}
 		return *this;
 	}
+	bool operator==(const TList &lst)const
+	{
+		if (this->datacount != lst.datacount)
+			return false;
+		else
+		{
+			Node<type>*left = this->pFirst;
+			Node<type>*right= lst.pFirst;
+			while (right != nullptr)
+			{
+				if (left->data != right->data)
+					return false;
+				left = left->pNext;
+				right = right->pNext;
+			}
+			return true;
+		}
+	}
+	bool operator!=(const TList &lst)const
+	{
+		return !(*this == lst);
+	}
 	void Push_Back(type tmp)
 	{
 		if (IsEmpty())
@@ -143,21 +130,22 @@ private:
 		else
 		{
 			if (datacount == MAXSIZE)
-				throw("Превышено максимальная длина списка");
+				throw("РџСЂРµРІС‹С€РµРЅРѕ РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° СЃРїРёСЃРєР°");
 			pCurrent->pNext = new Node<type>(tmp);
-			pPrevios = pCurrent;
 			pCurrent = pCurrent->pNext;
 			datacount++;
 		}
 	}
-	void Pop_Front()
+	type Pop_Front()
 	{
+		type val=pFirst->data;
 		Node<type> *tmp = pFirst;
 		pFirst = pFirst->pNext;
 		delete tmp;
 		datacount--;
+		return val;
 	}
-	void Insert(iterator it, type val)//вставка по значению и итератору ЧУШЬ!!!
+	void Insert(iterator it, type val)
 	{
 		Node<type> *count = pFirst;
 		Node <type> *prev;
@@ -186,7 +174,7 @@ private:
 	void Erase(iterator it)
 	{
 		Node<type> *count = pFirst;
-		Node <type> *prev = pPrevios;
+		Node <type> *prev;
 		int pos = 0;
 		while (count != it.pointer)
 		{
@@ -222,6 +210,11 @@ private:
 	iterator End()
 	{
 		iterator it;
+		if (IsEmpty())
+		{
+			it.pointer = pFirst;
+			return it;
+		}
 		it.pointer = pCurrent->pNext;
 		return it;
 	}
@@ -235,17 +228,9 @@ private:
 			return true;
 		else return false;
 	}
-	friend ostream &operator<<(ostream &os,TList &lst)
-	{
-		iterator it;
-		for (it = lst.Begin(); it != lst.End(); ++it)
-			os << *(it) << endl;
-		return os;
-	}
 	~TList()
 	{
 		Clear();
 	}
 	friend class iterator;
-	//friend class TPolinom;
 };
